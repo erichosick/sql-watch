@@ -57,5 +57,6 @@
   "devDependencies": {
     "@types/prompt-sync": "^4.1.1",
     "sonic-boom": "^3.1.0"
-  }
+  },
+  "gitHead": "78622bac9b81d1abb6395705644386e876b8fcc7"
 }
