@@ -25,7 +25,7 @@ yarn add --dev sql-watch
 npm install sql-watch --save-dev
 
 # initialize sql_watch schema and script directories.
-(set -o allexport; source .env.production; set +o allexport; node ./packages/sql-watch --init development)
+(set -o allexport; source .env.example; set +o allexport; npx sql-watch --init development)
 ```
 
 ## Usage
