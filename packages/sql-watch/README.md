@@ -35,10 +35,6 @@ npm install sql-watch --save-dev
 (set -o allexport; source .env.example; set +o allexport; npx sql-watch --init development)
 ```
 
-```blash
-# 
-```
-
 ## Usage
 
 ## How `sql-watch` Works
