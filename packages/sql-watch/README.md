@@ -45,7 +45,7 @@ npm install sql-watch --save-dev
 
 ### Run Order
 
-When one sql file is changed, `sql-watch` attempts to minimize the number of sql files executed: specifically in the `run` and `seed` directories. To that extent, `sql-watch` executes file in a specific order.
+When one sql file is changed, `sql-watch` attempts to minimize the number of sql files executed: specifically in the `run` and `seed` directories. To that extent, `sql-watch` executes files in a specific order.
 
 On saving any given SQL file, scripts run in the following order:
 
