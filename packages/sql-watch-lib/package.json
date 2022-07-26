@@ -1,6 +1,6 @@
 {
   "name": "sql-watch-lib",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "sql-watch-lib is a library that enables rapid SQL development by automatically applying idempotent SQL scripts to a database on file change.",
   "keywords": [
     "Sql",
