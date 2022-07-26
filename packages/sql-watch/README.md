@@ -20,7 +20,7 @@ NODE_ENV=development
 ```
 
 ```bash
-yarn add --save-dev sql-watch
+yarn add --dev sql-watch
 # or
 npm install sql-watch --save-dev
 
@@ -34,9 +34,11 @@ npm install sql-watch --save-dev
 
 `sql-watch` monitors for changes to SQL scripts. Upon changing and saving any of your scripts, `sql-watch` retroactively applies those changes to your database.
 
-<div style="text-align:center"><img src="../../docs/sql-runner-run.gif" /></div>
+<div style="text-align:center"><img src="https://github.com/erichosick/sql-watch/blob/0317650cf5ed9b4a0dbea788a94cce0d3e92c5cd/docs/sql-runner-run.gif?raw=true" /></div>
 
 ### Run Order
+
+When one sql file is changed, `sql-watch` attempts to minimize the number of sql files executed: specifically in the `run` and `seed` directories. To that extent, `sql-watch` executes file in a specific order.
 
 On saving any given SQL file, scripts run in the following order:
 
@@ -51,6 +53,8 @@ Within each folder, scripts run alphabetically by file name:
 2) `040_ran-second.sql`
 3) `900_ran-last.sql`
 
+For rapid development, the general intent is to add new files such that they sort after older files. This minimizes the number of file that run every time you make a change to a newer file.
+
 ### Directory Intent
 
 * `prerun` - anything that must run first: setting session variables, for example.
@@ -61,7 +65,7 @@ Within each folder, scripts run alphabetically by file name:
 * `postrun` - run the script after running and seeding the database. For example, maybe a quick sanity check.
 * `reset` - the intent is to tear down and reset everything in the database.
 
-### Idempotent SQL
+## Idempotent SQL
 
 By design, `sql-watch` runs the same sql script multiple times against a database. As such, sql script will need to be written with a focus on idempotence.
 
