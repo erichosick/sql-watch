@@ -43,7 +43,7 @@
     "sql-watch": "./lib/src/index.js"
   },
   "publishConfig": {
-    "registry": "https://registry.yarnpkg.com"
+    "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
     "build": "tsc",
