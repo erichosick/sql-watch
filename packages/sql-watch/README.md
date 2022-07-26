@@ -20,12 +20,23 @@ NODE_ENV=development
 ```
 
 ```bash
+# add globally
+yarn global add sql-watch
+# or
+npm install -g sql-watch
+
+# locally to a project
+
 yarn add --dev sql-watch
 # or
 npm install sql-watch --save-dev
 
 # initialize sql_watch schema and script directories.
 (set -o allexport; source .env.example; set +o allexport; npx sql-watch --init development)
+```
+
+```blash
+# 
 ```
 
 ## Usage
@@ -148,4 +159,4 @@ Given the following sql files:
 
 ## Development
 
-See [Monorepo readme](../../README.md) .
+See [Monorepo readme](https://www.github.com/erichosick/sql-watch).
