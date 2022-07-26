@@ -1,0 +1,61 @@
+{
+  "name": "sql-watch-lib",
+  "version": "0.0.1",
+  "description": "sql-watch-lib is a library that enables rapid SQL development by automatically applying idempotent SQL scripts to a database on file change.",
+  "keywords": [
+    "Sql",
+    "Postgresql",
+    "migration",
+    "migration tool",
+    "Sql migration",
+    "watch",
+    "runner",
+    "Sql runner",
+    "CI/CD",
+    "bdd",
+    "tdd",
+    "fdd",
+    "test driven development",
+    "behavior driven development",
+    "feature driven development"
+  ],
+  "author": {
+    "name": "Eric Hosick",
+    "email": "erichosick@gmail.com",
+    "url": "https://github.com/erichosick"
+  },
+  "contributors": [],
+  "license": "MIT",
+  "homepage": "https://github.com/erichosick/sql-watch",
+  "bugs": {
+    "url": "https://github.com/erichosick/sql-watch/issues",
+    "email": "erichosick@gmail.com"
+  },
+  "main": "lib/index.js",
+  "directories": {
+    "lib": "lib",
+    "src": "src"
+  },
+  "files": [
+    "lib"
+  ],
+  "publishConfig": {
+    "registry": "https://registry.yarnpkg.com"
+  },
+  "scripts": {
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "dependencies": {
+    "chokidar": "^3.5.3",
+    "pino": "^8.2.0",
+    "pino-pretty": "^8.1.0",
+    "postgres": "^3.2.4",
+    "prompt-sync": "^4.2.0"
+  },
+  "devDependencies": {
+    "@types/prompt-sync": "^4.1.1",
+    "sonic-boom": "^3.1.0"
+  }
+}

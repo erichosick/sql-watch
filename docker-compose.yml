@@ -1,0 +1,48 @@
+version: "3.8"
+
+# DOCUMENTATION:
+# * Mapping is external then internal.
+#   Example '8091:8080' maps external port 8091 to internal port 8080.
+# * See https://docs.docker.com/compose/environment-variables/ for information
+#   about environment variables
+# * ${PGPORT-5432}
+#   Statment says to use PGPORT environment varriable
+#   defaulting to 5432
+
+# services:
+#   env_file:
+#     - .env.local rely on .env (default) OR pass as command line argument
+#   depends_on: # services should be independent and runnable without relying on other services
+#     root_db:
+#       condition: service_healthy
+
+# WARNING!!!: Docker ignores the env_file: when environment: is also used.
+#             Don't know if this by design or unintended.
+
+services:
+  # NOTE: Properties at service level are also the host name
+  db.sqlwatch.local:
+    # https://github.com/moby/moby/issues/29492
+    shm_size: 1g
+    container_name: sqlwatch-testing-db
+    restart: always
+    image: sqlwatch-testing-db:latest
+    build:
+      context: ./db
+    volumes:
+      - sqlwatch_testing_db_data:/var/lib/postgresql/sqlwatch
+    ports:
+      - ${PGPORT-5432}:${PGPORT_CONTAINER-5432}
+    healthcheck:
+      test: pg_isready -U "$$PGUSER" -d "$$PGDATABASE"
+      interval: 10s
+      timeout: 2s
+      retries: 10
+    environment:
+      POSTGRES_DB: ${PGDATABASE:?err}
+      POSTGRES_USER: ${PGUSER:?err}
+      POSTGRES_PASSWORD: ${PGPASSWORD:?err}
+      POSTGRES_PORT: ${PGPORT_CONTAINER:?err}
+
+volumes:
+  sqlwatch_testing_db_data: {}

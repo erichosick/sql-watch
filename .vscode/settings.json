@@ -1,0 +1,17 @@
+{
+  "cSpell.words": [
+    "allexport",
+    "dbname",
+    "localpassword",
+    "onnotice",
+    "PGDATABASE",
+    "PGPASSWORD",
+    "PGPORT",
+    "PGSCHEMA",
+    "PGUSER",
+    "pino",
+    "postRun",
+    "preRun",
+    "sqlwatch"
+  ],
+}

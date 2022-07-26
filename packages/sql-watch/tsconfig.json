@@ -1,0 +1,13 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./lib",
+    "resolveJsonModule": true, /* Enable importing .json files. */
+  },
+  "include": [
+    "./src",
+  ],
+  "exclude": [
+    "./src/*.spec.*"
+  ],
+}
