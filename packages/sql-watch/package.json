@@ -1,6 +1,6 @@
 {
   "name": "sql-watch",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "sql-watch is a command line utility that enables rapid SQL development by automatically applying idempotent SQL scripts to a database on file change.",
   "keywords": [
     "Sql",
@@ -54,7 +54,7 @@
     "chokidar": "^3.5.3",
     "commander": "^9.4.0",
     "prompt-sync": "^4.2.0",
-    "sql-watch-lib": "^0.0.3"
+    "sql-watch-lib": "^0.0.4"
   },
   "gitHead": "78622bac9b81d1abb6395705644386e876b8fcc7"
 }
