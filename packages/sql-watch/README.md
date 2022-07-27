@@ -55,13 +55,13 @@ npm install sql-watch --save-dev
 
 ### Run Order
 
-When one sql file is changed, `sql-watch` attempts to minimize the number of sql files executed: specifically in the `run` and `seed` directories. To that extent, `sql-watch` executes files in a specific order.
+When one sql file is changed, to speed up development, `sql-watch` attempts to minimize the number of sql files executed: specifically in the `run` and `seed` directories. To that extent, `sql-watch` executes files in a specific order.
 
 On saving any given SQL file, scripts run in the following order:
 
 1) `./db/scripts/prerun` - all scripts are always ran first
 2) `./db/scripts/run` - based on sort order, the edited script and all scripts that follow are ran
-3) `./db/scripts/seed` - when `--seed` flag is provided, based on sort order, the edited script and all scripts that follow are ran
+3) `./db/scripts/seed` - when the `--seed` flag is provided, based on sort order, the edited script and all scripts that follow are ran
 4) `./db/scripts/postrun` - all scripts are always ran last
 
 Within each folder, scripts run alphabetically by file name:
@@ -70,7 +70,7 @@ Within each folder, scripts run alphabetically by file name:
 2) `040_ran-second.sql`
 3) `900_ran-last.sql`
 
-For rapid development, the general intent is to add new files such that they sort after older files. This minimizes the number of file that run every time you make a change to a file.
+For rapid development, the general intent is to name new files such that they sort after older files. This minimizes the number of files that run every time you make a change to a file.
 
 ### Directory Intent
 
@@ -84,7 +84,7 @@ For rapid development, the general intent is to add new files such that they sor
 
 ## Idempotent SQL
 
-By design, `sql-watch` runs the same sql script multiple times against a database. As such, sql script will need to be written with a focus on idempotence.
+By design, `sql-watch` runs the same sql script multiple times against a database. As such, sql script will need to be written with a focus on idempotence (see [example scripts](https://github.com/erichosick/sql-watch/tree/main/db/scripts)).
 
 Example SQL script that is idempotent (can be ran multiple times with the same outcome):
 
@@ -156,4 +156,4 @@ Given the following sql files:
 
 ## Development
 
-See [Monorepo readme](https://www.github.com/erichosick/sql-watch).
+See the [monorepo readme](https://www.github.com/erichosick/sql-watch).
