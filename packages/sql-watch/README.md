@@ -4,6 +4,16 @@
 
 `sql-watch` is **NOT** a SQL migration tool. `sql-watch` does not support the standard `migrate up` and `migrate rollback` development process.
 
+## Features
+
+* Programming language agnostic
+* Doesn't use/rely on an ORM
+* Use any SQL testing framework
+* Enables TDD and BDD
+* Improves SQL transparency in the design and development process
+* Faster SQL development time
+* Backwards compatible with the sql migration script pattern: use `sql-watch` for development and a migration tool when pushing to production.
+
 ## Setup
 
 `sql-watch` requires a running PostgreSQL database instance and the following environment variables set:
@@ -60,7 +70,7 @@ Within each folder, scripts run alphabetically by file name:
 2) `040_ran-second.sql`
 3) `900_ran-last.sql`
 
-For rapid development, the general intent is to add new files such that they sort after older files. This minimizes the number of file that run every time you make a change to a newer file.
+For rapid development, the general intent is to add new files such that they sort after older files. This minimizes the number of file that run every time you make a change to a file.
 
 ### Directory Intent
 
@@ -143,15 +153,6 @@ Given the following sql files:
 #### Example 05 - running `sql-watch --reset`
 
 * changes to any file cause 12 to run. All other files are ignored and `sql-watch` doesn't watch for any other changes.
-
-## Features
-
-* Programming Language agnostic
-* Doesn't use/rely on an ORM
-* Use any SQL testing framework
-* Enables TDD and BDD
-* Improves SQL transparency in the design and development process
-* Faster SQL development time
 
 ## Development
 
