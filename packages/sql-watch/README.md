@@ -72,6 +72,12 @@ Within each folder, scripts run alphabetically by file name:
 
 For rapid development, the general intent is to name new files such that they sort after older files. This minimizes the number of files that run every time you make a change to a file.
 
+### Committing
+
+`sql-watch` views sql files as independent units: committing each one based on run order. An error thrown by any given sql file will not roll back prior sql files but will stop any additional sql files from running.
+
+**Note**: Create a single sql file if you want to assure an all-or-nothing approach to committing.
+
 ### Directory Intent
 
 * `prerun` - anything that must run first: setting session variables, for example.

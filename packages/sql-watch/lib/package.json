@@ -1,59 +1,60 @@
 {
-  "name": "sql-watch",
-  "version": "0.0.1",
-  "description": "sql-watch is a command line utility that enables rapid SQL development by automatically applying idempotent SQL scripts to a database on file change.",
-  "keywords": [
-    "Sql",
-    "Postgresql",
-    "migration",
-    "migration tool",
-    "Sql migration",
-    "watch",
-    "runner",
-    "Sql runner",
-    "CI/CD",
-    "bdd",
-    "tdd",
-    "fdd",
-    "test driven development",
-    "behavior driven development",
-    "feature driven development"
-  ],
-  "author": {
-    "name": "Eric Hosick",
-    "email": "erichosick@gmail.com",
-    "url": "https://github.com/erichosick"
-  },
-  "contributors": [],
-  "license": "MIT",
-  "homepage": "https://github.com/erichosick/sql-watch",
-  "bugs": {
-    "url": "https://github.com/erichosick/sql-watch/issues",
-    "email": "erichosick@gmail.com"
-  },
-  "main": "lib/src/index.js",
-  "directories": {
-    "lib": "lib",
-    "src": "src"
-  },
-  "files": [
-    "lib"
-  ],
-  "bin": {
-    "sql-watch": "./lib/src/index.js"
-  },
-  "publishConfig": {
-    "registry": "https://registry.npmjs.org/"
-  },
-  "scripts": {
-    "build": "tsc",
-    "build:watch": "tsc --watch",
-    "test": "echo \"Error: run tests from root\" && exit 1"
-  },
-  "dependencies": {
-    "chokidar": "^3.5.3",
-    "commander": "^9.4.0",
-    "prompt-sync": "^4.2.0",
-    "sql-watch-lib": "^0.0.1"
-  }
+    "name": "sql-watch",
+    "version": "0.0.18",
+    "description": "sql-watch is a command line utility that enables rapid SQL development by automatically applying idempotent SQL scripts to a database on file change.",
+    "keywords": [
+        "Sql",
+        "Postgresql",
+        "migration",
+        "migration tool",
+        "Sql migration",
+        "watch",
+        "runner",
+        "Sql runner",
+        "CI/CD",
+        "bdd",
+        "tdd",
+        "fdd",
+        "test driven development",
+        "behavior driven development",
+        "feature driven development"
+    ],
+    "author": {
+        "name": "Eric Hosick",
+        "email": "erichosick@gmail.com",
+        "url": "https://github.com/erichosick"
+    },
+    "contributors": [],
+    "license": "MIT",
+    "homepage": "https://github.com/erichosick/sql-watch",
+    "bugs": {
+        "url": "https://github.com/erichosick/sql-watch/issues",
+        "email": "erichosick@gmail.com"
+    },
+    "main": "lib/src/index.js",
+    "directories": {
+        "lib": "lib",
+        "src": "src"
+    },
+    "files": [
+        "lib"
+    ],
+    "bin": {
+        "sql-watch": "./lib/src/index.js"
+    },
+    "publishConfig": {
+        "registry": "https://registry.npmjs.org/"
+    },
+    "scripts": {
+        "build": "tsc",
+        "build:watch": "tsc --watch",
+        "test": "echo \"Error: run tests from root\" && exit 1"
+    },
+    "dependencies": {
+        "chokidar": "^3.5.3",
+        "commander": "^9.4.0",
+        "prompt-sync": "^4.2.0",
+        "sql-watch-lib": "^0.0.12"
+    },
+    "gitHead": "988c7a66115ec96544af82c277b137a07921ae72"
 }

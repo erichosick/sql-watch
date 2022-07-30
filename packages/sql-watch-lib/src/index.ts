@@ -8,7 +8,7 @@ import postgres, { PostgresError } from 'postgres'; // https://github.com/porsag
 import promptSync from 'prompt-sync';
 
 // TODO: Decouple pino from the library
-import pino, { Logger, P } from 'pino';
+import pino, { Logger } from 'pino';
 
 /**
  * sql-watch uses itself to setup create the sql_watch schema used to maintain
