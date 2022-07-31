@@ -1,4 +1,0 @@
-INFO: Sql Watch successfully:
-INFO:   * created/updated the sql_watch schema in postgresql://postgres:*****@localhost:5477/postgres
-INFO:   * set the environment in sql_watch.environment to 'staging'.
-INFO:   * created/updated required script directories in './test_integration_02'.

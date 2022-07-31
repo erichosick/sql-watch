@@ -1,0 +1,1 @@
+-- File added to test sql-watch library

@@ -40,7 +40,7 @@ yarn docker:destroy
 
 `sql-watch` works closely with Postgresql: executing sql directly in Postgresql. `sql-watch` also creates files.
 
-It's essential, then, to test `sql-watch` and how it interacts with the OS file system and Postgresql server (more sql flavors supported in the future). We leverage integration tests to assure feature coverage.
+It's essential, then, to test `sql-watch` and how it interacts with the operating system file system and Postgresql server (more sql flavors supported in the future). We leverage integration tests to assure feature coverage.
 
 Instead of mocking and unit tests, we prefer integration tests monitoring for the following side effects:
 
