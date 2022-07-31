@@ -406,7 +406,7 @@ describe('SqlWatch-lib', () => {
             expect(content[6]).toEqual('');
           });
 
-          it.only('SqlWatch should only tests when set to only run tests', async () => {
+          it('SqlWatch should only tests when set to only run tests', async () => {
             const options = {
               connection: testConnection,
               sqlWatchSchemaName,

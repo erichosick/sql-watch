@@ -312,7 +312,7 @@ class SqlWatch {
             .filter((filename) => (this.isRunnableExtension(filename) ? filename : undefined))
             // Remove test files if configured as such
             .filter((filename) => {
-            const isTestFile = this.isRunnableExtension(filename);
+            const isTestFile = this.isTestExtension(filename);
             switch (this.options.runTests) {
                 case TestOption.Always: {
                     return filename;
@@ -353,7 +353,7 @@ class SqlWatch {
         return watcher;
     }
     // TODO: Refactor this a bit
-    // Try out best to show where the error is
+    // Try our best to show where the error is
     logPostgreSqlError(file, error) {
         const position = Number(error.position) || 0;
         const { query } = error;
@@ -466,7 +466,7 @@ class SqlWatch {
             }
             catch (err) {
                 if (err instanceof postgres_1.PostgresError && err.code === '42P01') {
-                    this.logger.error('sql-watch has not been initialized. Please run sql-watch --init <environment>. If you feel this is in error please check and verify that the sql_watch.environment table exists and has a valid environment entry');
+                    this.logger.error('SqlWatch has not been initialized. Did you set the init option? If you feel this is in error please check and verify that the sql_watch.environment table exists and has a valid environment entry');
                     return false;
                 }
                 // Have no idea why there was an error so we need to re-throw it.
@@ -479,7 +479,7 @@ class SqlWatch {
         return __awaiter(this, void 0, void 0, function* () {
             const environment = yield sql `SELECT environment FROM ${sql(this.options.sqlWatchSchemaName)}.environment`;
             if (environment.length === 0) {
-                this.logger.warn(`${this.options.sqlWatchSchemaName}.environment had no records when it should contain at least one record. Defaulting environment setting to production.`);
+                this.logger.warn(`${this.options.sqlWatchSchemaName}.environment had no records when it should contain at least one record. Defaulting environment setting to production`);
                 return Environment.Production;
             }
             return environment[0].environment;
