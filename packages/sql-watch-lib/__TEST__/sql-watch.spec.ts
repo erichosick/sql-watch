@@ -98,7 +98,7 @@ describe('SqlWatch-lib', () => {
         expect(existsSync(testRootDirectory)).toEqual(true);
 
         // AND there should be no sql watch schema
-        const schemaFound = await sql`SELECT * FROM information_schema.schemata WHERE schema_name = 'sql_watch';`;
+        const schemaFound = await sql`SELECT * FROM information_schema.schemata WHERE schema_name = '${sql(sqlWatchSchemaName)}';`;
         expect(schemaFound.length).toEqual(0);
       });
     });
@@ -129,8 +129,8 @@ describe('SqlWatch-lib', () => {
           const content = readFileSync('./test.log').toString('ascii').split('\n');
           expect(content.length).toEqual(5);
           expect(content[0]).toEqual('INFO: Sql Watch successfully:');
-          expect(content[1]).toEqual('INFO:   * created/updated the sql_watch schema in postgresql://postgres:*****@localhost:5477/postgres');
-          expect(content[2]).toEqual('INFO:   * set the environment in sql_watch.environment to \'production\'.');
+          expect(content[1]).toEqual('INFO:   * created/updated the sql_watch_test schema in postgresql://postgres:*****@localhost:5477/postgres');
+          expect(content[2]).toEqual('INFO:   * set the environment in sql_watch_test.environment to \'production\'.');
           expect(content[3]).toEqual('INFO:   * created/updated required script directories in \'./test_integration_01\'.');
           expect(content[4]).toEqual('');
 
@@ -158,8 +158,8 @@ describe('SqlWatch-lib', () => {
           const content = readFileSync('./test.log').toString('ascii').split('\n');
           expect(content.length).toEqual(5);
           expect(content[0]).toEqual('INFO: Sql Watch successfully:');
-          expect(content[1]).toEqual('INFO:   * created/updated the sql_watch schema in postgresql://postgres:*****@localhost:5477/postgres');
-          expect(content[2]).toEqual('INFO:   * set the environment in sql_watch.environment to \'development\'.');
+          expect(content[1]).toEqual('INFO:   * created/updated the sql_watch_test schema in postgresql://postgres:*****@localhost:5477/postgres');
+          expect(content[2]).toEqual('INFO:   * set the environment in sql_watch_test.environment to \'development\'.');
           expect(content[3]).toEqual('INFO:   * created/updated required script directories in \'./test_integration_01\'.');
           expect(content[4]).toEqual('');
 
@@ -188,8 +188,8 @@ describe('SqlWatch-lib', () => {
           const content = readFileSync('./test.log').toString('ascii').split('\n');
           expect(content.length).toEqual(5);
           expect(content[0]).toEqual('INFO: Sql Watch successfully:');
-          expect(content[1]).toEqual('INFO:   * created/updated the sql_watch schema in postgresql://postgres:*****@localhost:5477/postgres');
-          expect(content[2]).toEqual('INFO:   * set the environment in sql_watch.environment to \'staging\'.');
+          expect(content[1]).toEqual('INFO:   * created/updated the sql_watch_test schema in postgresql://postgres:*****@localhost:5477/postgres');
+          expect(content[2]).toEqual('INFO:   * set the environment in sql_watch_test.environment to \'staging\'.');
           expect(content[3]).toEqual('INFO:   * created/updated required script directories in \'./test_integration_01\'.');
           expect(content[4]).toEqual('');
 
@@ -212,7 +212,7 @@ describe('SqlWatch-lib', () => {
 
           const content = readFileSync('./test.log').toString('ascii').split('\n');
           expect(content.length).toEqual(2);
-          expect(content[0]).toEqual('ERROR: SqlWatch has not been initialized. Did you set the init option? If you feel this is in error please check and verify that the sql_watch.environment table exists and has a valid environment entry');
+          expect(content[0]).toEqual('ERROR: SqlWatch has not been initialized. Did you set the init option? If you feel this is in error please check and verify that the sql_watch_test.environment table exists and has a valid environment entry');
         });
       });
 

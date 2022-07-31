@@ -691,7 +691,7 @@ export class SqlWatch {
       await sql`SELECT environment FROM ${sql(this.options.sqlWatchSchemaName)}.environment`;
     } catch (err) {
       if (err instanceof PostgresError && err.code === '42P01') {
-        this.logger.error('SqlWatch has not been initialized. Did you set the init option? If you feel this is in error please check and verify that the sql_watch.environment table exists and has a valid environment entry');
+        this.logger.error(`SqlWatch has not been initialized. Did you set the init option? If you feel this is in error please check and verify that the ${this.options.sqlWatchSchemaName}.environment table exists and has a valid environment entry`);
         return false;
       }
       // Have no idea why there was an error so we need to re-throw it.
@@ -948,8 +948,8 @@ export class SqlWatch {
       if (this.options.init) {
         await this.init(this.options.init);
         this.logger.info('Sql Watch successfully:');
-        this.logger.info(`  * created/updated the sql_watch schema in ${this.sqlConnection.connectionUriNoPwd}`);
-        this.logger.info(`  * set the environment in sql_watch.environment to '${await this.getEnvironment(this.sql)}'.`);
+        this.logger.info(`  * created/updated the ${this.options.sqlWatchSchemaName} schema in ${this.sqlConnection.connectionUriNoPwd}`);
+        this.logger.info(`  * set the environment in ${this.options.sqlWatchSchemaName}.environment to '${await this.getEnvironment(this.sql)}'.`);
         this.logger.info(`  * created/updated required script directories in '${this.options.directories.rootDirectory}'.`);
       } else {
         const isInitialized = await this.verifyInitialized(this.sql);
