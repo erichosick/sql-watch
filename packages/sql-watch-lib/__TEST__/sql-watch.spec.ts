@@ -337,8 +337,6 @@ describe('SqlWatch-lib', () => {
             await sqlWatch.run();
             const content = readFileSync('./test.log').toString('ascii').split('\n');
 
-            console.log(content);
-
             // THEN we should see test and non-test files ran
             expect(content.length).toEqual(10);
             expect(content[0]).toEqual('INFO: APPLIED ./db/scripts/prerun/10_set-environment.sql');
