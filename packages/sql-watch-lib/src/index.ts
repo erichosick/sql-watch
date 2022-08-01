@@ -302,6 +302,12 @@ export enum TestOption {
   Skip = 'skip'
 }
 
+export interface ISqlWatch {
+  run(ignoreLastRunTime: boolean, fileNameChanged: string): Promise<boolean>;
+  doReset(): Promise<{ startedAt: Date, skip: boolean }>;
+  verifyInitialized(sql: postgres.Sql<{}>): Promise<boolean>;
+  getEnvironment(sql: postgres.Sql<{}>): Promise<Environment>;
+}
 /**
  * Options passed to sql-watch.
  */
@@ -433,7 +439,7 @@ export const WatchOptionsDefault = {
  * SqlWatch watches for changes to sql files: running sql files as needed when
  * changes are made.
  */
-export class SqlWatch {
+export class SqlWatch implements ISqlWatch {
   private isSetup: boolean = false;
 
   private logger: Logger;
@@ -783,7 +789,7 @@ export class SqlWatch {
     return applied;
   }
 
-  private async doReset(): Promise<{ startedAt: Date, skip: boolean }> {
+  public async doReset(): Promise<{ startedAt: Date, skip: boolean }> {
     let startedAt = new Date();
     let skip = false;
     if (this.options.reset) {
