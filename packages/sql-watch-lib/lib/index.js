@@ -128,8 +128,10 @@ class SqlConnection {
                     const severity = notice.severity.includes('NOTICE') ? '' : `${notice.severity}: `;
                     this._logger.info(`${severity}${notice.message}`);
                     const noticeDetails = (_a = notice.detail) === null || _a === void 0 ? void 0 : _a.split('\n');
-                    for (const noticeDetail of noticeDetails) {
-                        this._logger.info(`${severity}  ${noticeDetail}`);
+                    if (noticeDetails) {
+                        for (const noticeDetail of noticeDetails) {
+                            this._logger.info(`${severity}  ${noticeDetail}`);
+                        }
                     }
                 }
             } }));
