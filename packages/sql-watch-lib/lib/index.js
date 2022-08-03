@@ -117,6 +117,7 @@ class SqlConnection {
             // the transform option.
             // transform: { undefined: null },
             onnotice: (notice) => {
+                var _a;
                 // Let's not pollute sql-watch's output by showing postgresql messages
                 // that will be common with idempotent sql such as already exists,
                 // does not exist, etc.
@@ -126,7 +127,7 @@ class SqlConnection {
                 ) {
                     const severity = notice.severity.includes('NOTICE') ? '' : `${notice.severity}: `;
                     this._logger.info(`${severity}${notice.message}`);
-                    const noticeDetails = notice.detail.split('\n');
+                    const noticeDetails = (_a = notice.detail) === null || _a === void 0 ? void 0 : _a.split('\n');
                     for (const noticeDetail of noticeDetails) {
                         this._logger.info(`${severity}  ${noticeDetail}`);
                     }

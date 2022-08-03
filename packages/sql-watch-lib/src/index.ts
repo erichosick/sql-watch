@@ -165,7 +165,7 @@ export class SqlConnection {
           const severity = notice.severity.includes('NOTICE') ? '' : `${notice.severity}: `;
           this._logger.info(`${severity}${notice.message}`);
 
-          const noticeDetails = notice.detail.split('\n');
+          const noticeDetails = notice.detail?.split('\n');
           for (const noticeDetail of noticeDetails) {
             this._logger.info(`${severity}  ${noticeDetail}`);
           }
