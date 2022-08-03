@@ -166,8 +166,10 @@ export class SqlConnection {
           this._logger.info(`${severity}${notice.message}`);
 
           const noticeDetails = notice.detail?.split('\n');
-          for (const noticeDetail of noticeDetails) {
-            this._logger.info(`${severity}  ${noticeDetail}`);
+          if (noticeDetails) {
+            for (const noticeDetail of noticeDetails) {
+              this._logger.info(`${severity}  ${noticeDetail}`);
+            }
           }
         }
       },
