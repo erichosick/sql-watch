@@ -12,6 +12,7 @@
 * Enables TDD and BDD
 * Improves SQL transparency in the design and development process
 * Faster SQL development time
+* Use `sql-watch` as a migration tool for production
 * Backwards compatible with the sql migration script pattern: use `sql-watch` for development and a migration tool when pushing to production.
 
 ## Setup
