@@ -231,14 +231,7 @@ exports.WatchOptionsDefault = {
     runTests: TestOption.Always,
     extensions: ['.sql'],
     testExtensions: ['.spec.sql', '.test.sql'],
-    directories: {
-        rootDirectory: './db/scripts',
-        run: '/run',
-        preRun: '/prerun',
-        postRun: '/postrun',
-        reset: '/reset',
-        seed: '/seed',
-    },
+    directories: Object.assign({}, exports.DirectoriesDefault),
     sqlWatchSchemaName: 'sql_watch',
 };
 /**

@@ -54,6 +54,23 @@ npm install sql-watch --save-dev
 
 <div style="text-align:center"><img src="https://github.com/erichosick/sql-watch/blob/0317650cf5ed9b4a0dbea788a94cce0d3e92c5cd/docs/sql-runner-run.gif?raw=true" /></div>
 
+## Options
+
+| Option                   | Description                                                                                                                                                                                                                                                 |
+|--------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| -w, --watch              | when true, continuously watch for changes to sql scripts and automatically run them based on selected options.                                                                                                                                              |
+| -a, --always-run         | when true, sql files in the '/run' directory are always run: ignoring the last run time.                                                                                                                                                                    |
+| -b, --bypass             | bypasses the "are you sure?" prompt when resetting the database in production. Use this option when using Sql Watch within a CI/CD environment.                                                                                                             |
+| -v, --verbose            | provides additional information about running sql scripts such as which ones were skipped.                                                                                                                                                                  |
+| -l, --log-level <level>  | set the logging level: 'info' is the default.                                                                                                                                                                                                               |
+| -i, --init <environment> | creates all migration directories and initializes the Sql Watch schema in a database. The default environment is 'production'.                                                                                                                              |
+| -r, --reset              | execute sql scripts located in the ./reset directory. Combined with --watch causes a reset on every file change. A prompt is provided if the environment isn't one of 'development', 'staging', 'test' or 'other. See the --bypass option to bypass prompt. |
+| -s, --seed               | pre-seed the database with Lorem ipsum data which useful for local development. Examples being pre-loading movies, invoices, etc. Note: Meta-data, such as lookups, tags, etc. should be loaded via sql script located in the '/run' directory.             |
+| -t, --run-tests <type>   | define when tests are run. Options:<br>  always [default] - Always run tests.<br>  only - Only run tests.<br>  skip - Don't run tests. Hint: Use this option when you need to recreate the database from scratch for each test during integration testing.  |
+| -V, --version            | output the version number.                                                                                                                                                                                                                                  |
+| -h, --help               | display help for command.                                                                                                                                                                                                                                   |
+| Example calls:           | sql-watch --init development<br>sql-watch --seed --verbose<br>sql-watch --reset # will reset on every run<br>sql-watch --disable-watch --reset # reset without re-running                                                                                   |
+
 ### Run Order
 
 When one sql file is changed, to speed up development, `sql-watch` attempts to minimize the number of sql files executed: specifically in the `run` and `seed` directories. To that extent, `sql-watch` executes files in a specific order.

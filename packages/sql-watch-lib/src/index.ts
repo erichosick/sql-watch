@@ -427,12 +427,7 @@ export const WatchOptionsDefault = {
   extensions: ['.sql'],
   testExtensions: ['.spec.sql', '.test.sql'],
   directories: {
-    rootDirectory: './db/scripts',
-    run: '/run',
-    preRun: '/prerun',
-    postRun: '/postrun',
-    reset: '/reset',
-    seed: '/seed',
+    ...DirectoriesDefault,
   },
   sqlWatchSchemaName: 'sql_watch',
 };

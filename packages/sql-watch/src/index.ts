@@ -39,7 +39,7 @@ import * as jsonPackage from '../package.json';
                           always [default] - Always run tests.
                           only - Only run tests.
                           skip - Don't run tests. Hint: Use this option when you need to 
-                                 recreate the database from scratch for for each test during
+                                 recreate the database from scratch for each test during
                                  integration testing.
                           `)
     .version(jsonPackage.version)
