@@ -59,4 +59,4 @@ That isn't to say we don't value mocking and unit tests. We leverage these tools
 
 ## License
 
-Licensed under [MIT](./LICENSE.md) .
+Licensed under [MIT](./LICENSE.md).
