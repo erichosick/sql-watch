@@ -26,7 +26,6 @@ services:
     shm_size: 1g
     container_name: sqlwatch-testing-db
     restart: always
-    image: sqlwatch-testing-db:latest
     build:
       context: ./db
     volumes:
@@ -34,7 +33,11 @@ services:
     ports:
       - ${PGPORT-5432}:${PGPORT_CONTAINER-5432}
     healthcheck:
-      test: pg_isready -U "$$PGUSER" -d "$$PGDATABASE"
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -d ${PGDATABASE:?err} -U ${PGUSER:?err}"
+        ]
       interval: 10s
       timeout: 2s
       retries: 10

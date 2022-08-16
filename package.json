@@ -43,7 +43,7 @@
     "docker:up": "set -o allexport; source .env; source .env.local; set +o allexport; docker compose -f docker-compose.yml up",
     "docker:down": "set -o allexport; source .env; source .env.local; set +o allexport; docker compose -f docker-compose.yml down",
     "docker:build": "set -o allexport; source .env; source .env.local; set +o allexport; docker compose -f docker-compose.yml build",
-    "docker:destroy": "yarn docker:down ; docker rmi $(docker images --filter \"reference=sqlwatch-testing-db*\" -q) -f; docker volume rm sql-watch_sqlwatch_testing_db_data"
+    "docker:destroy": "yarn docker:down ; docker rmi $(docker images --filter \"reference=sql-watch*\" -q) -f; docker volume rm sql-watch_sqlwatch_testing_db_data"
   },
   "workspaces": [
     "packages/*"
