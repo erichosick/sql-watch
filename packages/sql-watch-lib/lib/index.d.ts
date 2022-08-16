@@ -245,7 +245,7 @@ export interface WatchOptions {
      */
     sqlWatchSchemaName: string;
 }
-declare type WatchOptionsPartial = Partial<WatchOptions>;
+export declare type WatchOptionsPartial = Partial<WatchOptions>;
 export declare const DirectoriesDefault: {
     rootDirectory: string;
     run: string;
@@ -350,4 +350,3 @@ export declare class SqlWatch implements ISqlWatch {
      */
     run(ignoreLastRunTime?: boolean, fileNameChanged?: string): Promise<boolean>;
 }
-export {};

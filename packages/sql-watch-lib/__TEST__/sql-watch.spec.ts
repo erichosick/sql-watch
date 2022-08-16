@@ -10,7 +10,7 @@ import { rmSync, existsSync, readFileSync } from 'fs';
 import { prettyLogger } from './pretty-support';
 
 import {
-  SqlConnection, SqlWatch, DirectoriesDefault, Environment, TestOption,
+  SqlConnection, SqlWatch, DirectoriesDefault, Environment, TestOption, WatchOptionsPartial,
 } from '../src/index';
 
 const testConnection = {
@@ -222,7 +222,7 @@ describe('SqlWatch-lib', () => {
           // the log file after each init so we don't have to test for/skip the
           // init messages (such as Sql Watch successfully:) that would show up
           // in the log file.
-          const options = {
+          const options: WatchOptionsPartial = {
             directories: { ...DirectoriesDefault, ...{ rootDirectory: testRootDirectory } },
             init: Environment.Development,
             connection: testConnection,
@@ -246,7 +246,7 @@ describe('SqlWatch-lib', () => {
 
         describe('run under development', () => {
           it('SqlWatch should only show "finished" when directories are all empty', async () => {
-            const options = {
+            const options: WatchOptionsPartial = {
               directories: { ...DirectoriesDefault, ...{ rootDirectory: testRootDirectory } },
               connection: testConnection,
               sqlWatchSchemaName,
@@ -285,7 +285,7 @@ describe('SqlWatch-lib', () => {
 
         describe('reset under development', () => {
           it('SqlWatch should only show reset and "finished" when directories are all empty', async () => {
-            const options = {
+            const options: WatchOptionsPartial = {
               directories: { ...DirectoriesDefault, ...{ rootDirectory: testRootDirectory } },
               connection: testConnection,
               sqlWatchSchemaName,
@@ -325,7 +325,7 @@ describe('SqlWatch-lib', () => {
 
         describe('run test and directory options', () => {
           it('SqlWatch should run both tests and run directory by default.', async () => {
-            const options = {
+            const options: WatchOptionsPartial = {
               connection: testConnection,
               sqlWatchSchemaName,
             };
@@ -352,7 +352,7 @@ describe('SqlWatch-lib', () => {
           });
 
           it('SqlWatch should run both tests and run directory when always is set', async () => {
-            const options = {
+            const options: WatchOptionsPartial = {
               connection: testConnection,
               sqlWatchSchemaName,
               runTests: TestOption.Always,
@@ -380,7 +380,7 @@ describe('SqlWatch-lib', () => {
           });
 
           it('SqlWatch should only run run directory when tests are skipped', async () => {
-            const options = {
+            const options: WatchOptionsPartial = {
               connection: testConnection,
               sqlWatchSchemaName,
               runTests: TestOption.Skip,
@@ -405,7 +405,7 @@ describe('SqlWatch-lib', () => {
           });
 
           it('SqlWatch should only tests when set to only run tests', async () => {
-            const options = {
+            const options: WatchOptionsPartial = {
               connection: testConnection,
               sqlWatchSchemaName,
               runTests: TestOption.Only,
@@ -428,7 +428,7 @@ describe('SqlWatch-lib', () => {
           });
 
           it('SqlWatch should throw an error when runTest option is invalid', async () => {
-            const options = {
+            const options: WatchOptionsPartial = {
               connection: testConnection,
               sqlWatchSchemaName,
               runTests: undefined,
@@ -442,6 +442,102 @@ describe('SqlWatch-lib', () => {
             await expect(sqlWatch.run())
               .rejects
               .toThrow("Non existent test option 'undefined'");
+          });
+        });
+
+        describe('run verbose options', () => {
+          it('SqlWatch should provide additional info when sql-watch is run with verbose and seed false.', async () => {
+            const options: WatchOptionsPartial = {
+              directories: { ...DirectoriesDefault, ...{ rootDirectory: testRootDirectory } },
+              connection: testConnection,
+              sqlWatchSchemaName,
+              verbose: true,
+            };
+            // GIVEN sql watch is created
+            const sqlWatch = new SqlWatch(options, logger);
+
+            // WHEN sqlWatch is first ran with no sql files in the sql schema directories
+            await sqlWatch.run();
+            const content = readFileSync('./test.log').toString('ascii').split('\n');
+
+            // THEN there should be extra information about the seed file being skipped
+            expect(content.length).toEqual(3);
+
+            expect(content[0]).toEqual('INFO: SKIPPED ./test_integration_01/seed: all (seed option was false)');
+            expect(content[1]).toContain('INFO: Finished in ');
+            expect(content[2]).toEqual('');
+          });
+
+          it('SqlWatch should NOT provide additional info when sql-watch is run with verbose and seed true.', async () => {
+            const options: WatchOptionsPartial = {
+              directories: { ...DirectoriesDefault, ...{ rootDirectory: testRootDirectory } },
+              connection: testConnection,
+              sqlWatchSchemaName,
+              verbose: true,
+              seed: true,
+            };
+            // GIVEN sql watch is created
+            const sqlWatch = new SqlWatch(options, logger);
+
+            // WHEN sqlWatch is first ran with no sql files in the sql schema directories
+            await sqlWatch.run();
+            const content = readFileSync('./test.log').toString('ascii').split('\n');
+
+            // THEN there should NOT be extra information as the seed file is not skipped
+            expect(content.length).toEqual(2);
+
+            expect(content[0]).toContain('INFO: Finished in ');
+            expect(content[1]).toEqual('');
+          });
+        });
+
+        describe('run invalid directories', () => {
+          it('SqlWatch should error with a missing run directory', async () => {
+            const badRunDirectory = {
+              ...DirectoriesDefault,
+              run: 'runNoForward',
+            };
+
+            const options: WatchOptionsPartial = {
+              directories: badRunDirectory,
+              connection: testConnection,
+              sqlWatchSchemaName,
+            };
+            // WHEN sql watch is created
+            // THEN it should throw an exception
+
+            expect(() => { new SqlWatch(options, logger); })
+              .toThrow("Directories must start with / which is missing from 'runNoForward'");
+          });
+        });
+
+        describe('sql file contains invalid sql', () => {
+          it('SqlWatch should log information about where the error is', async () => {
+            const options: WatchOptionsPartial = {
+              directories: { ...DirectoriesDefault, ...{ rootDirectory: './db2/scripts' } },
+              connection: testConnection,
+              sqlWatchSchemaName,
+              verbose: true,
+              seed: true,
+            };
+            // GIVEN sql watch is created
+            const sqlWatch = new SqlWatch(options, logger);
+
+            // WHEN sqlWatch is first ran with no sql files in the sql schema directories
+            await sqlWatch.run();
+            const content = readFileSync('./test.log').toString('ascii').split('\n');
+
+            // THEN information about the error should be logged
+            expect(content.length).toEqual(8);
+
+            expect(content[0]).toContain('/db2/scripts/run/030_bad-sql.sql:4 PostgresError (42601) syntax error at or near "NOT"');
+            expect(content[1]).toEqual('INFO:      1: -- This example error file will result in information about the error logging');
+            expect(content[2]).toEqual('INFO:      2: -- when ran by sql-watch.');
+            expect(content[3]).toEqual('INFO:      3: ');
+            expect(content[4]).toEqual('ERROR: *   4: CREATE TABLE sometable (');
+            expect(content[5]).toEqual('INFO:      5:   missing_type /* int */ NOT NULL DEFAULT 0');
+            expect(content[6]).toEqual('INFO:      6: );');
+            expect(content[7]).toEqual('');
           });
         });
       });

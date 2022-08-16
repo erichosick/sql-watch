@@ -399,7 +399,7 @@ export interface WatchOptions {
   sqlWatchSchemaName: string;
 }
 
-type WatchOptionsPartial = Partial<WatchOptions>;
+export type WatchOptionsPartial = Partial<WatchOptions>;
 
 export const DirectoriesDefault = {
   rootDirectory: './db/scripts',
@@ -452,6 +452,9 @@ export class SqlWatch implements ISqlWatch {
   private watcher: chokidar.FSWatcher | undefined;
 
   private dirWithRoot(directory: string) {
+    if (!directory.startsWith('/')) {
+      throw new Error(`Directories must start with / which is missing from '${directory}'`);
+    }
     return `${this.options.directories.rootDirectory}${directory}`;
   }
 
@@ -857,13 +860,8 @@ export class SqlWatch implements ISqlWatch {
     ignoreLastRunTime: boolean = false,
   ): Promise<boolean> {
     const runDir = this.runDirectories.run;
-    if (!runDir) {
-      this.logger.warn('The Sql Watch directory (defaulted to ./db/run) must be provided within the options.');
-    } else {
-      const runRoot = this.dirWithRoot(this.options.directories.run);
-      return await this.runSql(runDir, runRoot, lastRunTime, ignoreLastRunTime);
-    }
-    return false;
+    const runRoot = this.dirWithRoot(this.options.directories.run);
+    return await this.runSql(runDir, runRoot, lastRunTime, ignoreLastRunTime);
   }
 
   private async doPostRun() {

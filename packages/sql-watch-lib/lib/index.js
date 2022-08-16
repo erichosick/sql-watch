@@ -279,6 +279,9 @@ class SqlWatch {
         }
     }
     dirWithRoot(directory) {
+        if (!directory.startsWith('/')) {
+            throw new Error(`Directories must start with / which is missing from '${directory}'`);
+        }
         return `${this.options.directories.rootDirectory}${directory}`;
     }
     /**
@@ -617,14 +620,8 @@ class SqlWatch {
     doRun(lastRunTime, ignoreLastRunTime = false) {
         return __awaiter(this, void 0, void 0, function* () {
             const runDir = this.runDirectories.run;
-            if (!runDir) {
-                this.logger.warn('The Sql Watch directory (defaulted to ./db/run) must be provided within the options.');
-            }
-            else {
-                const runRoot = this.dirWithRoot(this.options.directories.run);
-                return yield this.runSql(runDir, runRoot, lastRunTime, ignoreLastRunTime);
-            }
-            return false;
+            const runRoot = this.dirWithRoot(this.options.directories.run);
+            return yield this.runSql(runDir, runRoot, lastRunTime, ignoreLastRunTime);
         });
     }
     doPostRun() {
