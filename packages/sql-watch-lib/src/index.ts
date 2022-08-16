@@ -552,8 +552,7 @@ export class SqlWatch implements ISqlWatch {
             return isTestFile ? undefined : filename;
           }
           default: {
-            // Assume we are running tests if no options are provided.
-            return filename;
+            throw new Error(`Non existent test option '${this.options.runTests}'`);
           }
         }
       });

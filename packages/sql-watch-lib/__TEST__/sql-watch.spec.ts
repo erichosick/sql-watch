@@ -426,6 +426,23 @@ describe('SqlWatch-lib', () => {
             expect(content[3]).toContain('INFO: Finished in ');
             expect(content[4]).toEqual('');
           });
+
+          it('SqlWatch should throw an error when runTest option is invalid', async () => {
+            const options = {
+              connection: testConnection,
+              sqlWatchSchemaName,
+              runTests: undefined,
+            };
+
+            // GIVEN sql watch is created
+            const sqlWatch = new SqlWatch(options, logger);
+
+            // WHEN running sqlWatch
+            // THEN it should throw an exception
+            await expect(sqlWatch.run())
+              .rejects
+              .toThrow("Non existent test option 'undefined'");
+          });
         });
       });
     });
