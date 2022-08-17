@@ -539,6 +539,115 @@ describe('SqlWatch-lib', () => {
             expect(content[6]).toEqual('INFO:      6: );');
             expect(content[7]).toEqual('');
           });
+
+          it('SqlWatch should log information an error but not know where the error is', async () => {
+            const options: WatchOptionsPartial = {
+              directories: { ...DirectoriesDefault, ...{ rootDirectory: './db3/scripts' } },
+              connection: testConnection,
+              sqlWatchSchemaName,
+              verbose: true,
+            };
+            // GIVEN sql watch is created
+            const sqlWatch = new SqlWatch(options, logger);
+
+            // WHEN sqlWatch is first ran with no sql files in the sql schema directories
+            await sqlWatch.run();
+            const content = readFileSync('./test.log').toString('ascii').split('\n');
+
+            // THEN information about the error should be logged
+            expect(content.length).toEqual(2);
+
+            expect(content[0]).toContain('/db3/scripts/run/040_bad-sql.sql:0 PostgresError (42P01) relation "notable" does not exist');
+            expect(content[1]).toEqual('');
+          });
+        });
+
+        describe('sql-watch schema manually removed', () => {
+          it('SqlWatch should log information about an error when last_run is manually removed', async () => {
+            const options: WatchOptionsPartial = {
+              connection: testConnection,
+              sqlWatchSchemaName,
+            };
+            // GIVEN sql watch is created
+            const sqlWatch = new SqlWatch(options, logger);
+
+            // WHEN we drop the last_run view
+            await sql`DROP VIEW IF EXISTS ${sql(sqlWatchSchemaName)}.last_run;`;
+
+            // AND run sql watch
+            await sqlWatch.run();
+            const content = readFileSync('./test.log').toString('ascii').split('\n');
+
+            // THEN information about the error should be logged
+            expect(content.length).toEqual(3);
+
+            expect(content[0]).toEqual('ERROR: :0 PostgresError (42P01) relation "sql_watch_test.last_run" does not exist');
+            expect(content[1]).toEqual('WARN: Unable to determine error line number.');
+            expect(content[2]).toEqual('');
+          });
+
+          it('SqlWatch should log information about an error when environment is manually removed', async () => {
+            const options: WatchOptionsPartial = {
+              connection: testConnection,
+              sqlWatchSchemaName,
+            };
+            // GIVEN sql watch is created
+            const sqlWatch = new SqlWatch(options, logger);
+
+            // WHEN we drop the environment table
+            await sql`DROP TABLE IF EXISTS ${sql(sqlWatchSchemaName)}.environment;`;
+
+            // AND run sql watch
+            await sqlWatch.run();
+            const content = readFileSync('./test.log').toString('ascii').split('\n');
+
+            // THEN information about the error should be logged
+            expect(content.length).toEqual(2);
+
+            expect(content[0]).toEqual('ERROR: SqlWatch has not been initialized. Did you set the init option? If you feel this is in error please check and verify that the sql_watch_test.environment table exists and has a valid environment entry');
+            expect(content[1]).toEqual('');
+          });
+
+          it('SqlWatch should error out when the connection is closed', async () => {
+            const options: WatchOptionsPartial = {
+              connection: testConnection,
+              sqlWatchSchemaName,
+            };
+            // GIVEN sql watch is created
+            const sqlWatch = new SqlWatch(options, logger);
+
+            // AND a sql connection
+            const sql2 = new SqlConnection(logger, testConnection).connection;
+
+            // WHEN we close the connection
+            await sql2.end({ timeout: 4 });
+
+            // AND we try to verify
+            // THEN an error is thrown
+            await expect(sqlWatch.verifyInitialized(sql2))
+              .rejects
+              .toThrow('write CONNECTION_ENDED localhost:5477');
+          });
+
+          it('SqlWatch should error out when the environment is cleared out', async () => {
+            const options: WatchOptionsPartial = {
+              connection: testConnection,
+              sqlWatchSchemaName,
+            };
+            // GIVEN sql watch is created
+            const sqlWatch = new SqlWatch(options, logger);
+
+            // WHEN we drop the environment table
+            await sql`DELETE FROM ${sql(sqlWatchSchemaName)}.environment;`;
+
+            // AND try to run sql watch
+            await sqlWatch.run();
+
+            const content = readFileSync('./test.log').toString('ascii').split('\n');
+
+            // THEN information about the error should be logged
+            expect(content[8]).toEqual('WARN: sql_watch_test.environment had no records when it should contain at least one record. Defaulting environment setting to production');
+          });
         });
       });
     });

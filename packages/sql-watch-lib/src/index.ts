@@ -694,7 +694,7 @@ export class SqlWatch implements ISqlWatch {
   public async verifyInitialized(sql: postgres.Sql<{}>): Promise<boolean> {
     try {
       await sql`SELECT environment FROM ${sql(this.options.sqlWatchSchemaName)}.environment`;
-    } catch (err) {
+    } catch (err: unknown) {
       if (err instanceof PostgresError && err.code === '42P01') {
         this.logger.error(`SqlWatch has not been initialized. Did you set the init option? If you feel this is in error please check and verify that the ${this.options.sqlWatchSchemaName}.environment table exists and has a valid environment entry`);
         return false;
