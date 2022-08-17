@@ -52,7 +52,7 @@ npm install sql-watch --save-dev
 
 `sql-watch` monitors for changes to SQL scripts. Upon changing and saving any of your scripts, `sql-watch` actively applies those changes to your database.
 
-<div style="text-align:center"><img src="https://github.com/erichosick/sql-watch/blob/0317650cf5ed9b4a0dbea788a94cce0d3e92c5cd/docs/sql-runner-run.gif?raw=true" /></div>
+<div style="text-align:center"><img src="https://github.com/erichosick/sql-watch/blob/f136513a2cc1b61ef81782ecfe338f94b81f5b90/docs/sql-runner-run.gif?raw=true" /></div>
 
 ## Options
 
