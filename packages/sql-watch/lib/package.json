@@ -1,6 +1,6 @@
 {
     "name": "sql-watch",
-    "version": "0.0.32",
+    "version": "0.0.33",
     "description": "sql-watch is a command line utility that enables rapid SQL development by automatically applying idempotent SQL scripts to a database on file change.",
     "keywords": [
         "Sql",
