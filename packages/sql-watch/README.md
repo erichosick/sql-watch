@@ -2,7 +2,7 @@
 
 `sql-watch` is a command line utility that enables rapid SQL development by automatically applying idempotent SQL scripts to a PostgreSQL database on file change.
 
-`sql-watch` is **NOT** a SQL migration tool. `sql-watch` does not support the standard `migrate up` and `migrate rollback` development process.
+`sql-watch` is **NOT** a SQL migration tool. `sql-watch` does not support the standard `migrate up` and `migrate rollback` sql migration pattern.
 
 ## Features
 
@@ -13,7 +13,7 @@
 * Improves SQL transparency in the design and development process
 * Faster SQL development time
 * Use `sql-watch` as a migration tool for production
-* Backwards compatible with the sql migration script pattern: use `sql-watch` for development and a migration tool when pushing to production.
+* Backwards compatible with the sql migration script pattern: use `sql-watch` for development and a migration tool when pushing to production
 
 ## Setup
 
@@ -50,7 +50,7 @@ npm install sql-watch --save-dev
 
 ## How `sql-watch` Works
 
-`sql-watch` monitors for changes to SQL scripts. Upon changing and saving any of your scripts, `sql-watch` retroactively applies those changes to your database.
+`sql-watch` monitors for changes to SQL scripts. Upon changing and saving any of your scripts, `sql-watch` actively applies those changes to your database.
 
 <div style="text-align:center"><img src="https://github.com/erichosick/sql-watch/blob/0317650cf5ed9b4a0dbea788a94cce0d3e92c5cd/docs/sql-runner-run.gif?raw=true" /></div>
 
@@ -182,3 +182,7 @@ Given the following sql files:
 ## Development
 
 See the [monorepo readme](https://www.github.com/erichosick/sql-watch).
+
+## Why?
+
+We feel that sql should be treated as first class code. Traditional process that apply sql to a database, such as the "run once" migration script, view sql as second class code (see [Idempotent SQL DDL](https://medium.com/full-stack-architecture/idempotent-sql-ddl-ca354a1eee62) for thoughts on this) meaning we can't leverage other development practices afforded first class code.
