@@ -122,7 +122,8 @@ CREATE TABLE IF NOT EXISTS iso.iso639_1 (
   label shared.label NOT NULL
 );
 
--- Creating a domain by surround with TRY/CATCH
+-- Creating a domain: surrounding it with TRY/CATCH in the case the domain
+-- already exists.
 DO $$ BEGIN
   CREATE DOMAIN shared.weight AS DECIMAL(18,2);
 EXCEPTION
