@@ -14,6 +14,8 @@
 * Faster SQL development time
 * Use `sql-watch` as a migration tool for production
 * Backwards compatible with the sql migration script pattern: use `sql-watch` for development and a migration tool when pushing to production
+* Easily support and maintain sql in legacy databases
+* Focus on minimizing risk of breaking production databases
 
 ## Setup
 
