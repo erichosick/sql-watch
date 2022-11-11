@@ -25,7 +25,6 @@ const testConnection = {
 
 const sqlWatchSchemaName = 'sql_watch_test';
 
-
 describe('unit tests', () => {
   const testRootDirectory = './test_unit_01';
 
@@ -651,5 +650,4 @@ describe('integration tests', () => {
       });
     });
   });
-});
 });

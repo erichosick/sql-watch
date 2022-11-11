@@ -464,7 +464,7 @@ class SqlWatch {
             }
             catch (err) {
                 if (err instanceof postgres_1.PostgresError && err.code === '42P01') {
-                    this.logger.error(`SqlWatch has not been initialized. Did you set the init option? If you feel this is in error please check and verify that the ${this.options.sqlWatchSchemaName}.environment table exists and has a valid environment entry`);
+                    this.logger.error(`SqlWatch has not been initialized. Have your run sql-watch with the init option? If you feel this is in error please check and verify that the ${this.options.sqlWatchSchemaName}.environment table exists and has a valid environment entry`);
                     return false;
                 }
                 // Have no idea why there was an error so we need to re-throw it.
