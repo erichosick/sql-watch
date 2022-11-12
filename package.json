@@ -37,13 +37,15 @@
     "build:watch": "yarn lerna run --parallel build:watch",
     "publish:all": "yarn test && yarn build && yarn lerna publish",
     "test": "jest",
-    "test:watch": "jest --watch --coverage --collectCoverageFrom=\"./packages/**/src/*.ts\" --verbose",
-    "test:watch:no-coverage": "jest --watch --verbose",
+    "test:unit:watch": "set -o allexport; source .env; source .env.local; set +o allexport; jest --watch --coverage --collectCoverageFrom=\"./packages/**/src/*.ts\" --verbose",
+    "test:unit:watch:no-coverage": "jest --watch --verbose",
     "sql-watch": "set -o allexport; source .env; source .env.local; set +o allexport; node ./packages/sql-watch",
     "docker:up": "set -o allexport; source .env; source .env.local; set +o allexport; docker compose -f docker-compose.yml up",
     "docker:down": "set -o allexport; source .env; source .env.local; set +o allexport; docker compose -f docker-compose.yml down",
     "docker:build": "set -o allexport; source .env; source .env.local; set +o allexport; docker compose -f docker-compose.yml build",
-    "docker:destroy": "yarn docker:down ; docker rmi $(docker images --filter \"reference=sql-watch*\" -q) -f; docker volume rm sql-watch_sqlwatch_testing_db_data"
+    "docker:destroy": "yarn docker:down ; docker rmi $(docker images --filter \"reference=sql-watch*\" -q) -f; docker volume rm sql-watch_sqlwatch_testing_db_data",
+    "lerna:create": "yarn lerna create -y",
+    "tsc": "echo \"You probably don't want to run tsc at the root of this mono-repo. It creates maps and types for every ts file!\""
   },
   "workspaces": [
     "packages/*"

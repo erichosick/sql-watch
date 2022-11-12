@@ -1,4 +1,6 @@
--- README: This is used for testing.
+-- README: This schema is used for testing.
+-- The files used by sql-watch to create the sql-watch schema when --init
+-- is provied are located in sql-watch-lib/lib/db/scripts/run/10_sql_watch-schema.sql
 
 -- EXTENSIONS ------------------------------------------------------------------
 

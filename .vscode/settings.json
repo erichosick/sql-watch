@@ -8,10 +8,13 @@
     "PGPASSWORD",
     "PGPORT",
     "PGSCHEMA",
+    "pgsql",
     "PGUSER",
     "pino",
     "postRun",
     "preRun",
+    "sqlpm",
+    "sqlw",
     "sqlwatch"
   ],
 }

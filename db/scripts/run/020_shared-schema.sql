@@ -9,7 +9,7 @@ COMMENT ON SCHEMA shared IS 'contains resources that can potentially be shared w
 
 
 DO $$ BEGIN
-	CREATE DOMAIN shared.label AS varchar(128);
+  CREATE DOMAIN shared.label AS varchar(128);
 EXCEPTION
     WHEN duplicate_object THEN null;
 END $$;
