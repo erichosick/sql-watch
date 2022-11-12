@@ -28,6 +28,10 @@ const sqlWatchSchemaName = 'sql_watch_test';
 describe('unit tests', () => {
   const testRootDirectory = './test_unit_01';
 
+  if (existsSync(testRootDirectory)) {
+    rmSync(testRootDirectory, { recursive: true });
+  }
+
   it('SqlWatch should throw an error when connection options are incorrect', () => {
     expect(() => {
       new SqlWatch({
