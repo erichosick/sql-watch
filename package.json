@@ -36,7 +36,7 @@
     "build": "yarn lerna run build",
     "build:watch": "yarn lerna run --parallel build:watch",
     "publish:all": "yarn test && yarn build && yarn lerna publish",
-    "test": "jest",
+    "test:unit": "yarn build && jest --config=./jest.unit.config.ts",
     "test:unit:watch": "jest --watch --coverage --collectCoverageFrom=\"./packages/**/src/*.ts\" --verbose",
     "test:unit:watch:no-coverage": "jest --watch --verbose",
     "sql-watch": "set -o allexport; source .env; source .env.local; set +o allexport; node ./packages/sql-watch",
