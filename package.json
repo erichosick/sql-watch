@@ -35,7 +35,7 @@
   "scripts": {
     "build": "yarn lerna run build",
     "build:watch": "yarn lerna run --parallel build:watch",
-    "publish:all": "yarn test && yarn build && yarn lerna publish",
+    "publish:all": "yarn test:integration && yarn build && yarn lerna publish",
     "test:integration": "yarn build && jest --config=./jest.integration.config.ts",
     "test:integration:watch": "jest --config=./jest.integration.config.ts --watch --coverage --collectCoverageFrom=\"./packages/**/src/*.ts\" --verbose",
     "test:integration:watch:no-coverage": "jest --config=./jest.integration.config.ts --watch --verbose",
