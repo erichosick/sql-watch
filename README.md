@@ -30,7 +30,7 @@ yarn docker:up
 yarn build:watch
 
 # continuously run integration tests
-yarn test:watch
+yarn test:integration:watch
 
 # need to cleanup?
 yarn docker:destroy
