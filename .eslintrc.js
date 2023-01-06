@@ -45,6 +45,13 @@ module.exports = {
 
     'max-classes-per-file': 'off',
 
+    // see https://stackoverflow.com/questions/63961803/eslint-says-all-enums-in-typescript-app-are-already-declared-in-the-upper-scope
+    // note you must disable the base rule as it can report incorrect errors
+    // When trying to declare an enum like export enum Environment { ... }
+    // we get the error. 'Environment' is already declared in the upper scope
+    // on line ...
+    'no-shadow': 'off',
+    '@typescript-eslint/no-shadow': ['error'],
   },
   settings: {
     // fix -  Unable to resolve path to module '../src'
@@ -96,11 +103,6 @@ module.exports = {
 
 //     // https://basarat.gitbook.io/typescript/main-1/defaultisbad
 //     'import/prefer-default-export': 'off',
-
-//     // see https://stackoverflow.com/questions/63961803/eslint-says-all-enums-in-typescript-app-are-already-declared-in-the-upper-scope
-//     // note you must disable the base rule as it can report incorrect errors
-//     'no-shadow': 'off',
-//     '@typescript-eslint/no-shadow': ['error'],
 
 //     // In my opinion, code is more readable if we explicitly write
 //     // return await ...

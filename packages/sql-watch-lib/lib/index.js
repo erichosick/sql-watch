@@ -38,6 +38,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.SqlWatch = exports.WatchOptionsDefault = exports.DirectoriesDefault = exports.TestOption = exports.Environment = exports.SqlConnection = exports.loggerDefault = void 0;
 const fs_1 = require("fs");
 const path_1 = require("path");
+const ssh2_1 = __importDefault(require("ssh2"));
 const chokidar_1 = __importDefault(require("chokidar"));
 const postgres_1 = __importStar(require("postgres")); // https://github.com/porsager/postgres
 const prompt_sync_1 = __importDefault(require("prompt-sync"));
@@ -81,6 +82,8 @@ class SqlConnection {
         const password = env.PGPASSWORD || (connection === null || connection === void 0 ? void 0 : connection.password);
         const dbname = env.PGDATABASE || (connection === null || connection === void 0 ? void 0 : connection.dbname);
         const schema = env.PGSCHEMA || (connection === null || connection === void 0 ? void 0 : connection.schema);
+        const socket = undefined;
+        let sshConnection;
         if (!host || !user || !password || !dbname) {
             const missingOptions = [];
             if (!host) {
@@ -98,8 +101,40 @@ class SqlConnection {
             const errorMessage = `Connection missing required options: ${missingOptions.join(', ')}. Required options can be set with environment variables or via the connection parameter`;
             throw Error(errorMessage);
         }
+        // see https://github.com/mscdex/ssh2 and https://github.com/porsager/postgres#custom-socket
+        if (env.SSH_HOST !== undefined) {
+            const sshHost = env.SSH_HOST;
+            const sshPort = Number(env.SSH_PORT);
+            const sshUser = env.SSH_USER;
+            const sshPrivateKeyPath = env.SSH_PRIVATE_KEY_PATH;
+            if (!sshHost || !sshPort || !sshUser || !sshPrivateKeyPath) {
+                const missingSshOptions = [];
+                if (!sshHost) {
+                    missingSshOptions.push('ssh host');
+                }
+                if (!sshPort) {
+                    missingSshOptions.push('ssh port');
+                }
+                if (!sshUser) {
+                    missingSshOptions.push('ssh user');
+                }
+                if (!sshPrivateKeyPath) {
+                    missingSshOptions.push('ssh private key path');
+                }
+                const errorMessage = `When the ssh option is set, then the following options are also required: ${missingSshOptions.join(', ')}. Required ssh options can be set with environment variables or via the connection parameter`;
+                throw Error(errorMessage);
+            }
+            const privateKey = (0, fs_1.readFileSync)(sshPrivateKeyPath, 'utf8');
+            sshConnection = {
+                host: sshHost,
+                port: sshPort,
+                user: sshUser,
+                privateKeyPath: sshPrivateKeyPath,
+                privateKey,
+            };
+        }
         this._connectionOptions = {
-            host, port, user, password, dbname, schema,
+            host, port, user, password, dbname, schema, ssh: sshConnection, socket,
         };
         this._connection = this.createConnection();
     }
@@ -110,7 +145,7 @@ class SqlConnection {
     createConnection() {
         const finalConnection = this._connectionOptions;
         // https://github.com/porsager/postgres#all-postgres-options
-        return (0, postgres_1.default)(Object.assign(Object.assign({}, finalConnection), { 
+        const options = Object.assign(Object.assign({}, finalConnection), { 
             // If we get the error "UNDEFINED_VALUE: Undefined values are not allowed"
             // then it probably means we have something like
             // select * from x where y = ${ undefined }. So, we aren't going to enable
@@ -134,7 +169,27 @@ class SqlConnection {
                         }
                     }
                 }
-            } }));
+            } });
+        if (finalConnection === null || finalConnection === void 0 ? void 0 : finalConnection.ssh) {
+            this._logger.debug('SSH: Connecting to database using an ssh Tunnel.');
+            const sshConnection = {
+                host: finalConnection.ssh.host,
+                port: finalConnection.ssh.port,
+                username: finalConnection.ssh.user,
+                privateKey: finalConnection.ssh.privateKey,
+            };
+            options.socket = () => new Promise((resolve2, reject2) => {
+                const ssh = new ssh2_1.default.Client();
+                ssh
+                    .on('error', reject2)
+                    .on('ready', () => {
+                    this._logger.debug(`SSH: Client ready to connect. Forwarding localhost:${finalConnection.port} to ${finalConnection.host}:${finalConnection.port}`);
+                    ssh.forwardOut('localhost', finalConnection.port, finalConnection.host, finalConnection.port, (err, socket) => (err ? reject2(err) : resolve2(socket)));
+                })
+                    .connect(sshConnection);
+            });
+        }
+        return (0, postgres_1.default)(options);
     }
     /**
      * Build at the query part of the uri.
@@ -239,6 +294,12 @@ exports.WatchOptionsDefault = {
  * changes are made.
  */
 class SqlWatch {
+    dirWithRoot(directory) {
+        if (!directory.startsWith('/')) {
+            throw new Error(`Directories must start with / which is missing from '${directory}'`);
+        }
+        return `${this.options.directories.rootDirectory}${directory}`;
+    }
     /**
      * Sets up SqlWatch, verifying the configuration, setting up a logger and
      * a sql connection to the database.
@@ -278,11 +339,8 @@ class SqlWatch {
             this.watcher = undefined;
         }
     }
-    dirWithRoot(directory) {
-        if (!directory.startsWith('/')) {
-            throw new Error(`Directories must start with / which is missing from '${directory}'`);
-        }
-        return `${this.options.directories.rootDirectory}${directory}`;
+    getSql() {
+        return this.sql;
     }
     /**
      * Checks if a file name should be ran based on the options.extension. If a
@@ -621,7 +679,7 @@ class SqlWatch {
         return __awaiter(this, void 0, void 0, function* () {
             const runDir = this.runDirectories.run;
             const runRoot = this.dirWithRoot(this.options.directories.run);
-            return yield this.runSql(runDir, runRoot, lastRunTime, ignoreLastRunTime);
+            return this.runSql(runDir, runRoot, lastRunTime, ignoreLastRunTime);
         });
     }
     doPostRun() {

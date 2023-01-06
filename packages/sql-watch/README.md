@@ -181,6 +181,19 @@ Given the following sql files:
 
 * changes to any file cause 12 to run. All other files are ignored and `sql-watch` doesn't watch for any other changes.
 
+## SSH Tunnel
+
+`sql-watch` supports SSH Tunneling: for example accessing a database through a bastion host.
+
+```bash
+# required environment variables with example values to use SSH Tunneling
+
+SSH_HOST=3.4.5.6 # bastion host IP
+SSH_PORT=22 # ssh port on bastion 
+SSH_USER=ubuntu # user name on the host
+SSH_PRIVATE_KEY_PATH=/... # absolute path to the ssh file
+```
+
 ## Development
 
 See the [monorepo readme](https://www.github.com/erichosick/sql-watch).

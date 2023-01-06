@@ -52,10 +52,12 @@
     "pino": "^8.2.0",
     "pino-pretty": "^8.1.0",
     "postgres": "^3.2.4",
-    "prompt-sync": "^4.2.0"
+    "prompt-sync": "^4.2.0",
+    "ssh2": "^1.11.0"
   },
   "devDependencies": {
     "@types/prompt-sync": "^4.1.1",
+    "@types/ssh2": "^1.11.6",
     "sonic-boom": "^3.1.0"
   },
   "gitHead": "988c7a66115ec96544af82c277b137a07921ae72"

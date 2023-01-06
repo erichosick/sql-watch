@@ -25,6 +25,21 @@ export declare const loggerDefault: {
     timestamp: boolean;
 };
 /**
+ * Ssh connection options.
+ */
+export interface SshConnection {
+    /** The ssh host for the ssh connection. Example: localhost. */
+    host: string;
+    /** The ssh port for the ssh connection. Example: 22. */
+    port: number;
+    /** The ssh user for the connection */
+    user: string;
+    /** The ssh private key path for the ssh connection */
+    privateKeyPath: string;
+    /** The ssh private key for the ssh connection */
+    privateKey?: string;
+}
+/**
  * Connection options. These options are based on the conventions described in
  * https://www.postgresql.org/docs/current/libpq-envars.html
  */
@@ -54,6 +69,10 @@ export interface Connection {
      * PGSCHEMA was not an official postgresql environment variable.
      */
     schema?: string | undefined;
+    /** An optional setting for an ssh connection  */
+    ssh?: SshConnection;
+    /** FUTURE FEATURE: Add options and ssl configuration */
+    socket?: any | undefined;
 }
 export declare class SqlConnection {
     private _connectionOptions;
@@ -245,7 +264,7 @@ export interface WatchOptions {
      */
     sqlWatchSchemaName: string;
 }
-export declare type WatchOptionsPartial = Partial<WatchOptions>;
+export type WatchOptionsPartial = Partial<WatchOptions>;
 export declare const DirectoriesDefault: {
     rootDirectory: string;
     run: string;
@@ -300,6 +319,7 @@ export declare class SqlWatch implements ISqlWatch {
      * @param options Configuration options.
      */
     constructor(options: WatchOptionsPartial, logger?: Logger | undefined);
+    getSql(): postgres.Sql<{}>;
     /**
      * Checks if a file name should be ran based on the options.extension. If a
      * file has the extension, it is considered runnable.
@@ -337,7 +357,7 @@ export declare class SqlWatch implements ISqlWatch {
     private static createDir;
     private createDirs;
     private init;
-    private shutdown;
+    shutdown(): Promise<void>;
     /**
      * Runs all the sql script located in the directories configured in
      * options.directories based on the state of the last run time.

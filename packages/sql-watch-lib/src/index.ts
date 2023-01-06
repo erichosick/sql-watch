@@ -1,7 +1,9 @@
 import {
-  existsSync, readdirSync, statSync, mkdirSync,
+  existsSync, readdirSync, statSync, mkdirSync, readFileSync,
 } from 'fs';
 import { resolve } from 'path';
+
+import ssh2 from 'ssh2';
 
 import chokidar from 'chokidar';
 import postgres, { PostgresError } from 'postgres'; // https://github.com/porsager/postgres
@@ -57,6 +59,26 @@ export const loggerDefault = {
 // Connection configuration ----------------------------------------------------
 
 /**
+ * Ssh connection options.
+ */
+export interface SshConnection {
+  /** The ssh host for the ssh connection. Example: localhost. */
+  host: string,
+
+  /** The ssh port for the ssh connection. Example: 22. */
+  port: number,
+
+  /** The ssh user for the connection */
+  user: string,
+
+  /** The ssh private key path for the ssh connection */
+  privateKeyPath: string
+
+  /** The ssh private key for the ssh connection */
+  privateKey?: string
+}
+
+/**
  * Connection options. These options are based on the conventions described in
  * https://www.postgresql.org/docs/current/libpq-envars.html
  */
@@ -92,7 +114,12 @@ export interface Connection {
    */
   schema?: string | undefined
 
+  /** An optional setting for an ssh connection  */
+  ssh?: SshConnection
+
   /** FUTURE FEATURE: Add options and ssl configuration */
+
+  socket?: any | undefined
 }
 
 interface PostgresNotice {
@@ -121,6 +148,10 @@ export class SqlConnection {
     const dbname = env.PGDATABASE || connection?.dbname;
     const schema = env.PGSCHEMA || connection?.schema;
 
+    const socket = undefined;
+
+    let sshConnection;
+
     if (!host || !user || !password || !dbname) {
       const missingOptions = [];
       if (!host) { missingOptions.push('host'); }
@@ -132,8 +163,37 @@ export class SqlConnection {
       throw Error(errorMessage);
     }
 
+    // see https://github.com/mscdex/ssh2 and https://github.com/porsager/postgres#custom-socket
+    if (env.SSH_HOST !== undefined) {
+      const sshHost = env.SSH_HOST;
+      const sshPort = Number(env.SSH_PORT);
+      const sshUser = env.SSH_USER;
+      const sshPrivateKeyPath = env.SSH_PRIVATE_KEY_PATH;
+
+      if (!sshHost || !sshPort || !sshUser || !sshPrivateKeyPath) {
+        const missingSshOptions = [];
+        if (!sshHost) { missingSshOptions.push('ssh host'); }
+        if (!sshPort) { missingSshOptions.push('ssh port'); }
+        if (!sshUser) { missingSshOptions.push('ssh user'); }
+        if (!sshPrivateKeyPath) { missingSshOptions.push('ssh private key path'); }
+
+        const errorMessage = `When the ssh option is set, then the following options are also required: ${missingSshOptions.join(', ')}. Required ssh options can be set with environment variables or via the connection parameter`;
+        throw Error(errorMessage);
+      }
+
+      const privateKey = readFileSync(sshPrivateKeyPath, 'utf8');
+
+      sshConnection = {
+        host: sshHost,
+        port: sshPort,
+        user: sshUser,
+        privateKeyPath: sshPrivateKeyPath,
+        privateKey,
+      };
+    }
+
     this._connectionOptions = {
-      host, port, user, password, dbname, schema,
+      host, port, user, password, dbname, schema, ssh: sshConnection, socket,
     };
 
     this._connection = this.createConnection();
@@ -146,7 +206,8 @@ export class SqlConnection {
   private createConnection(): postgres.Sql<{}> {
     const finalConnection = this._connectionOptions;
     // https://github.com/porsager/postgres#all-postgres-options
-    return postgres({
+
+    const options = {
       ...finalConnection,
       // If we get the error "UNDEFINED_VALUE: Undefined values are not allowed"
       // then it probably means we have something like
@@ -173,7 +234,35 @@ export class SqlConnection {
           }
         }
       },
-    });
+    };
+
+    if (finalConnection?.ssh) {
+      this._logger.debug('SSH: Connecting to database using an ssh Tunnel.');
+      const sshConnection = {
+        host: finalConnection.ssh.host,
+        port: finalConnection.ssh.port,
+        username: finalConnection.ssh.user,
+        privateKey: finalConnection.ssh.privateKey,
+      };
+      options.socket = () => new Promise((resolve2, reject2) => {
+        const ssh = new ssh2.Client();
+        ssh
+          .on('error', reject2)
+          .on('ready', () => {
+            this._logger.debug(`SSH: Client ready to connect. Forwarding localhost:${finalConnection.port} to ${finalConnection.host}:${finalConnection.port}`);
+            ssh.forwardOut(
+              'localhost',
+              finalConnection.port,
+              finalConnection.host,
+              finalConnection.port,
+              (err, socket) => (err ? reject2(err) : resolve2(socket)),
+            );
+          })
+          .connect(sshConnection);
+      });
+    }
+
+    return postgres(options);
   }
 
   /**
@@ -509,6 +598,10 @@ export class SqlWatch implements ISqlWatch {
     } else {
       this.watcher = undefined;
     }
+  }
+
+  public getSql(): postgres.Sql<{}> {
+    return this.sql;
   }
 
   /**
@@ -861,7 +954,7 @@ export class SqlWatch implements ISqlWatch {
   ): Promise<boolean> {
     const runDir = this.runDirectories.run;
     const runRoot = this.dirWithRoot(this.options.directories.run);
-    return await this.runSql(runDir, runRoot, lastRunTime, ignoreLastRunTime);
+    return this.runSql(runDir, runRoot, lastRunTime, ignoreLastRunTime);
   }
 
   private async doPostRun() {
@@ -922,7 +1015,7 @@ export class SqlWatch implements ISqlWatch {
     await this.setupSqlWatch(environment);
   }
 
-  private async shutdown() {
+  public async shutdown() {
     await this.sql.end({ timeout: 5 });
     if (this.watcher) {
       await this.watcher.close();
